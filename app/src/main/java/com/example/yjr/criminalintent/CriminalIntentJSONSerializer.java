@@ -16,9 +16,6 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 
-/**
- * Created by yjr on 2016/1/10.
- */
 public class CriminalIntentJSONSerializer {
 
     private Context mContext;
@@ -65,7 +62,7 @@ public class CriminalIntentJSONSerializer {
             InputStream input = mContext.openFileInput(mFilename);
             reader = new BufferedReader(new InputStreamReader(input));
             StringBuilder jsonString = new StringBuilder();
-            String line = null;
+            String line;
 
             while((line = reader.readLine()) != null) {
                 jsonString.append(line);

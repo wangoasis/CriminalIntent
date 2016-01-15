@@ -1,15 +1,11 @@
 package com.example.yjr.criminalintent;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.UUID;
 
-/**
- * Created by yjr on 2015/3/17.
- */
 public class Crime {
 
     private static final String JSON_CRIME_UUID = "JSON_CRIME_UUID";

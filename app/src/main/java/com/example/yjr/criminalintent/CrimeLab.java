@@ -2,15 +2,9 @@ package com.example.yjr.criminalintent;
 
 import android.content.Context;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-/**
- * Created by yjr on 2015/3/17.
- */
 public class CrimeLab {
 
     private static final String JSON_CRIME_FILE = "crimes.json";
@@ -65,6 +59,10 @@ public class CrimeLab {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public void deleteCrime(Crime c) {
+        crimes.remove(c);
     }
 
 }
