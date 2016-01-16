@@ -21,7 +21,7 @@ public class CrimeLab {
         try {
             crimes = criminalIntentJSONSerializer.loadCrimes();
         } catch (Exception e) {
-            crimes = new ArrayList<Crime>();
+            crimes = new ArrayList<>();
         }
     }
 

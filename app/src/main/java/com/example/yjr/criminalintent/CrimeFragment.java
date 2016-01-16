@@ -18,13 +18,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import java.util.Date;
 import java.util.UUID;
 
-/**
- * Created by yjr on 2015/3/17.
- */
 public class CrimeFragment extends Fragment {
 
 
@@ -32,6 +30,7 @@ public class CrimeFragment extends Fragment {
     private EditText editTitle;
     private Button buttonDetails;
     private CheckBox checkboxIsSolved;
+    private ImageButton buttonTakePhoto;
 
     public static CrimeFragment newInstance(UUID id) {
 
@@ -99,6 +98,15 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 crime.setSolved(isChecked);
+            }
+        });
+
+        buttonTakePhoto = (ImageButton)v.findViewById(R.id.crime_imageButton);
+        buttonTakePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), CrimeCameraActivity.class);
+                startActivity(i);
             }
         });
 
