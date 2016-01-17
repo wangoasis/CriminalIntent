@@ -106,7 +106,7 @@ public class CrimeListFragment extends ListFragment {
 
         // start an instance of CrimePagerActivity
         Intent i = new Intent(getActivity(), CrimePageActivity.class);
-        i.putExtra(CommonStrings.extraCrimeID, c.getID());
+        i.putExtra(CrimeFragment.extraCrimeID, c.getID());
         startActivityForResult(i, 0);
     }
 
@@ -159,8 +159,8 @@ public class CrimeListFragment extends ListFragment {
                 Crime crime = new Crime();
                 CrimeLab.get(getActivity()).addCrime(crime);
                 Intent i = new Intent(getActivity(), CrimePageActivity.class);
-                i.putExtra(CommonStrings.extraCrimeID, crime.getID());
-                startActivityForResult(i, CommonStrings.REQUEST_CRIME);
+                i.putExtra(CrimeFragment.extraCrimeID, crime.getID());
+                startActivityForResult(i, 0);
                 return true;
 
             default:

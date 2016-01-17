@@ -10,7 +10,7 @@ public class CrimeActivity extends SingleFragmentActivity {
     @Override
     protected Fragment createFragment() {
 
-        UUID id = (UUID)getIntent().getSerializableExtra(CommonStrings.extraCrimeID);
+        UUID id = (UUID)getIntent().getSerializableExtra(CrimeFragment.extraCrimeID);
         return CrimeFragment.newInstance(id);
     }
 }

@@ -64,7 +64,7 @@ public class CrimePageActivity extends FragmentActivity {
 
         viewPager.setOffscreenPageLimit(1);
 
-        UUID id = (UUID) getIntent().getSerializableExtra(CommonStrings.extraCrimeID);
+        UUID id = (UUID) getIntent().getSerializableExtra(CrimeFragment.extraCrimeID);
         for (int i = 0; i < crimes.size(); i++) {
             if (crimes.get(i).getID().equals(id)) {
                 viewPager.setCurrentItem(i);

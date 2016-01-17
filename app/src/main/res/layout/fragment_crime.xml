@@ -56,5 +56,12 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:text="@string/checkbox"/>
+
+        <ImageView android:id="@+id/crime_imageView"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@android:color/darker_gray"
+            android:scaleType="centerInside"/>
+
     </LinearLayout>
 </LinearLayout>

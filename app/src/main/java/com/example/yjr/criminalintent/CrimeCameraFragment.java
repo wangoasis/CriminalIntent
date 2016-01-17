@@ -1,5 +1,8 @@
 package com.example.yjr.criminalintent;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,12 +13,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 public class CrimeCameraFragment extends Fragment {
 
+    public static final String PHOTO_FILENAME = "photo_file_name";
+
     private Camera mCamera;
+    private View mProgressBarContainer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -27,7 +35,8 @@ public class CrimeCameraFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                getActivity().finish();
+                if(mCamera != null)
+                    mCamera.takePicture(shutterCallback, null, pictureCallback);
             }
         });
 
@@ -69,8 +78,58 @@ public class CrimeCameraFragment extends Fragment {
             }
         });
 
+        mProgressBarContainer = v.findViewById(R.id.progress_camera_container);
+        mProgressBarContainer.setVisibility(View.INVISIBLE);
+
         return v;
     }
+
+    private Camera.ShutterCallback shutterCallback = new Camera.ShutterCallback() {
+        @Override
+        public void onShutter() {
+
+            mProgressBarContainer.setVisibility(View.VISIBLE);
+        }
+    };
+
+    private Camera.PictureCallback pictureCallback = new Camera.PictureCallback() {
+        @Override
+        public void onPictureTaken(byte[] data, Camera camera) {
+
+            String filename = UUID.randomUUID().toString() + ".jpg";
+            FileOutputStream os = null;
+            boolean success = true;
+
+            try {
+                os = getActivity().openFileOutput(filename, Context.MODE_PRIVATE);
+                os.write(data);
+            } catch (IOException e) {
+                success = false;
+                e.printStackTrace();
+            } finally {
+
+                if(os != null) {
+                    try {
+                        os.close();
+                    } catch (IOException e) {
+                        success = false;
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            if(success) {
+
+                Intent intent = new Intent();
+                intent.putExtra(PHOTO_FILENAME, filename);
+                getActivity().setResult(Activity.RESULT_OK, intent);
+            } else {
+                getActivity().setResult(Activity.RESULT_CANCELED);
+            }
+
+            getActivity().finish();
+        }
+    };
 
     private Camera.Size getBestSupportedSize(List<Camera.Size> sizeList) {
 

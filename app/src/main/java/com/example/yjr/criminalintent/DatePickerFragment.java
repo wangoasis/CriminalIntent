@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 
@@ -25,7 +24,7 @@ public class DatePickerFragment extends DialogFragment {
     public static DatePickerFragment newInstance(Date date) {
 
         Bundle args = new Bundle();
-        args.putSerializable(CommonStrings.DIALOG_DATE, date);
+        args.putSerializable(CrimeFragment.DIALOG_DATE, date);
 
         DatePickerFragment datePickerFragment = new DatePickerFragment();
         datePickerFragment.setArguments(args);
@@ -36,7 +35,7 @@ public class DatePickerFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        date = (Date) getArguments().getSerializable(CommonStrings.DIALOG_DATE);
+        date = (Date) getArguments().getSerializable(CrimeFragment.DIALOG_DATE);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         int year = calendar.get(Calendar.YEAR);
@@ -53,7 +52,7 @@ public class DatePickerFragment extends DialogFragment {
 
                 date = new GregorianCalendar(year, monthOfYear, dayOfMonth).getTime();
 
-                getArguments().putSerializable(CommonStrings.DIALOG_DATE, date);
+                getArguments().putSerializable(CrimeFragment.DIALOG_DATE, date);
             }
         });
 
@@ -77,7 +76,7 @@ public class DatePickerFragment extends DialogFragment {
         }
 
         Intent i = new Intent();
-        i.putExtra(CommonStrings.DIALOG_DATE, date);
+        i.putExtra(CrimeFragment.DIALOG_DATE, date);
 
         getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, i);
     }
