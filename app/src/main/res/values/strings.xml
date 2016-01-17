@@ -11,6 +11,8 @@
     <string name="crimeList_title">Crimes</string>
     <string name="dialog_title">Select the date: </string>
     <string name="label_ok">confirm</string>
+    <string name="label_cancel">cancel</string>
+    <string name="alert_question">delete the crime?</string>
     <string name="new_crime">New Crime</string>
     <string name="show_subtitle">Show Subtitle</string>
     <string name="hide_subtitle">Hide Subtitle</string>
@@ -18,5 +20,15 @@
     <string name="delete_crime">Delete</string>
     <string name="take_photo">take!</string>
     <string name="title_activity_crime_camera">CrimeCameraActivity</string>
+    <string name="crime_contact_button">choose from contact</string>
+    <string name="crime_report_button">send text</string>
+    <string name="crime_report">%1$s!
+        The crime was discovered on %2$s. %3$s, and %4$s
+    </string>
+    <string name="crime_report_solved">The case is solved</string>
+    <string name="crime_report_unsolved">The case is not solved</string>
+    <string name="crime_report_no_suspect">There is no suspect.</string>
+    <string name="crime_report_suspect">The suspect is %s.</string>
+    <string name="crime_report_subject">CriminalIntent Crime Report</string>
 
 </resources>

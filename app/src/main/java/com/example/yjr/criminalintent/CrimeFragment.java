@@ -2,15 +2,21 @@ package com.example.yjr.criminalintent;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,6 +43,7 @@ public class CrimeFragment extends Fragment {
 
     public static final int REQUEST_DIALOG_DATE = 0;
     public static final int REQUEST_PHOTO = 1;
+    public static final int REQUEST_CONTACT = 2;
 
     private Crime crime;
     private EditText editTitle;
@@ -44,6 +51,8 @@ public class CrimeFragment extends Fragment {
     private CheckBox checkboxIsSolved;
     private ImageButton buttonTakePhoto;
     private ImageView photoView;
+    private Button buttonSendReport;
+    private Button buttonChooseContact;
 
     public static CrimeFragment newInstance(UUID id) {
 
@@ -204,9 +213,57 @@ public class CrimeFragment extends Fragment {
             }
         });
 
+        buttonSendReport = (Button)v.findViewById(R.id.button_crime_report);
+        buttonSendReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, getCrimeReport());
+                intent.putExtra(Intent.EXTRA_SUBJECT, R.string.crime_report_subject);
+                startActivity(intent);
+            }
+        });
+
+        buttonChooseContact = (Button)v.findViewById(R.id.button_crime_contact);
+        buttonChooseContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                startActivityForResult(intent, REQUEST_CONTACT);
+            }
+        });
+        if(crime.getSuspect()!=null)
+            buttonChooseContact.setText(crime.getSuspect());
+
         return v;
     }
 
+    // set the format of the crime report
+    private String getCrimeReport() {
+
+        String solvedString = null;
+        if (crime.isSolved()) {
+            solvedString = getString(R.string.crime_report_solved);
+        } else {
+            solvedString = getString(R.string.crime_report_unsolved);
+        }
+
+        String dateFormat = "EEE, MMM dd";
+        String dateString = DateFormat.format(dateFormat, crime.getDate()).toString();
+
+        String suspect = crime.getSuspect();
+        if (suspect == null) {
+            suspect = getString(R.string.crime_report_no_suspect);
+        } else {
+            suspect = getString(R.string.crime_report_suspect, suspect);
+        }
+
+        String report = getString(R.string.crime_report, crime.getTitle(), dateString, solvedString, suspect);
+
+        return report;
+    }
 
     // display a scale-down photo on the ImageView once the crime have a photo
     private void showPhoto() {
@@ -227,6 +284,7 @@ public class CrimeFragment extends Fragment {
         UUID id = (UUID) getArguments().getSerializable(extraCrimeID);
         crime = CrimeLab.get(getActivity()).getCrime(id);
 
+        setHasOptionsMenu(true);
         getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -255,6 +313,24 @@ public class CrimeFragment extends Fragment {
             deletePrePhotoOnDisk();
             crime.setPhoto(photo);
             showPhoto();
+        } else if(requestCode == REQUEST_CONTACT)
+        // get the result of choosing from contacts
+            {
+                Uri contactUri = data.getData();
+
+                Cursor cursor = getActivity().getContentResolver().query(contactUri,
+                                                                         new String[]{ContactsContract.Contacts.DISPLAY_NAME},
+                                                                         null, null, null);
+                if(cursor.getCount()==0) {
+                    cursor.close();
+                    return;
+                }
+
+                cursor.moveToFirst();
+                String suspectName = cursor.getString(0);
+                crime.setSuspect(suspectName);
+                buttonChooseContact.setText(suspectName);
+                cursor.close();
         }
     }
 
@@ -271,12 +347,34 @@ public class CrimeFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_crime, menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.home:
                 if(NavUtils.getParentActivityName(getActivity()) != null) {
                     NavUtils.navigateUpFromSameTask(getActivity());
                 }
+                return true;
+
+            case R.id.crime_fragment_delete:
+                // display a alertDialog to confirm or cancel the action of deleting
+                new AlertDialog.Builder(getActivity()).
+                        setTitle(R.string.alert_question).
+                        setPositiveButton(R.string.label_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deletePrePhotoOnDisk();
+                        CrimeLab.get(getActivity()).deleteCrime(crime);
+                        getActivity().finish();
+                    }
+                }).
+                        setNegativeButton(R.string.label_cancel, null).
+                        show();
                 return true;
 
             default:
